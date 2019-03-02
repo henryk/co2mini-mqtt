@@ -1,0 +1,7 @@
+#mqtt:
+#  discovery_prefix: homeassistant
+#  broker: 127.0.0.1
+#  password: ""
+#  username: homeassistant
+
+name: 'Living Room CO2'

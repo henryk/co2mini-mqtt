@@ -1,0 +1,3 @@
+git+https://github.com/heinemml/CO2Meter#egg=CO2Meter
+paho-mqtt
+pyyaml
