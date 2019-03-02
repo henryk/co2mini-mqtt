@@ -1,0 +1,11 @@
+[Unit]
+Description=CO2 MQTT sensor
+
+[Service]
+ExecStart=/usr/bin/python3 co2mini-mqtt.py
+WorkingDirectory=%h/co2mini-mqtt
+Restart=always
+RestartSec=10
+
+[Install]
+WantedBy=default.target
