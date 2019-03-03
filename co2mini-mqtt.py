@@ -37,7 +37,7 @@ class Co2miniMqtt:
             'payload_available': "online",
             'payload_not_available': "offline",
             'json_attributes_topic': "{}/state".format(self.prefix),
-            'force_update': True,
+            'force_update': self.config.get('force_update', False),
             'unique_id': '{}:{}'.format(platform.node(), self.config.get('device', '/dev/co2mini0')),
             'device': {
                 'connections': [
