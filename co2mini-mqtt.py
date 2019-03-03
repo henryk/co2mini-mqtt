@@ -28,7 +28,7 @@ class Co2miniMqtt:
 
         disc_config = {
             'state_topic': "{}/state".format(self.prefix),
-            'expire_after': 10,
+            #'expire_after': 10,
             'name': self.config.get('name', '{} co2mini'.format(platform.node())),
             'unit_of_measurement': 'ppm',
             'icon': 'mdi:periodic-table-co2',
