@@ -17,6 +17,7 @@ class Co2miniMqtt:
         self.sensor = None
         self.mqttc = None
         self.state = {}
+        self.last_pub = {}
 
     def main(self):
         self.mqttc = Client()
@@ -32,11 +33,10 @@ class Co2miniMqtt:
             'name': self.config.get('name', '{} co2mini'.format(platform.node())),
             'unit_of_measurement': 'ppm',
             'icon': 'mdi:periodic-table-co2',
-            'value_template': "{{ value_json.co2 }}",
             'availability_topic': "{}/status".format(self.prefix),
             'payload_available': "online",
             'payload_not_available': "offline",
-            'json_attributes_topic': "{}/state".format(self.prefix),
+            'json_attributes_topic': "{}/attributes".format(self.prefix),
             'force_update': self.config.get('force_update', False),
             'unique_id': '{}:{}'.format(platform.node(), self.config.get('device', '/dev/co2mini0')),
             'device': {
@@ -56,7 +56,14 @@ class Co2miniMqtt:
 
     def sensor_callback(self, sensor, value):
         self.state[SOURCE_MAP[sensor]] = value
-        self.mqttc.publish("{}/state".format(self.prefix), json.dumps(self.state), retain=True)
+        pub = {
+           'state': self.state.get('co2'),
+           'attributes': json.dumps({k:v for (k,v) in self.state.items() if not k == 'co2'}),
+        }
+        for k, v in pub.items():
+            if v != self.last_pub.get(k, None):
+               self.mqttc.publish("{}/{}".format(self.prefix, k), v, retain=True)
+               self.last_pub[k] = v
 
 
 if __name__ == "__main__":
