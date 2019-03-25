@@ -49,8 +49,7 @@ class Co2miniMqtt:
                 'connections': [
                     ['usb', self.config.get('device', '/dev/co2mini0')],
                 ],
-                'identifiers':
-                    ('dns', platform.node()),
+                'identifiers': (platform.node()),
                 'manufacturer': 'Various',
                 'model': 'co2mini',
             }
