@@ -57,19 +57,23 @@ class CO2Meter_mod:
 
             decrypted = self._decrypt(data)
             if decrypted[4] != 0x0d or (sum(decrypted[:3]) & 0xff) != decrypted[3]:
-                print(self._hd(data), " => ", self._hd(decrypted), "Checksum error")
-            else:
-                operation = decrypted[0]
-                val = decrypted[1] << 8 | decrypted[2]
-                self._values[operation] = val
-                if self._callback is not None:
-                    if operation == CO2METER_CO2:
-                        self._callback(sensor=operation, value=val)
-                    elif operation == CO2METER_TEMP:
-                        self._callback(sensor=operation,
-                                       value=round(val / 16.0 - 273.1, 1))
-                    elif operation == CO2METER_HUM:
-                        self._callback(sensor=operation, value=round(val / 100.0, 1))
+                if data[4] == 0x0d and (sum(data[:3]) & 0xff) == data[3]:
+                      decrypted = data
+                else:
+                      print(self._hd(data), " => ", self._hd(decrypted), "Checksum error")
+                      return
+
+            operation = decrypted[0]
+            val = decrypted[1] << 8 | decrypted[2]
+            self._values[operation] = val
+            if self._callback is not None:
+                if operation == CO2METER_CO2:
+                    self._callback(sensor=operation, value=val)
+                elif operation == CO2METER_TEMP:
+                    self._callback(sensor=operation,
+                                   value=round(val / 16.0 - 273.1, 1))
+                elif operation == CO2METER_HUM:
+                    self._callback(sensor=operation, value=round(val / 100.0, 1))
         except:
             self._running = False
 
